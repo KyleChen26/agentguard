@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "agentguard"
+version = "0.1.0"
+description = "Pre-deployment security scanner for AI agent skills"
+authors = ["KyleChen <ky1echen@foxmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "agentguard"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+click = "^8.1.7"
+pyyaml = "^6.0.1"
+
+[tool.poetry.scripts]
+agentguard = "agentguard.cli.main:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

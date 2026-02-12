@@ -1,0 +1,38 @@
+# Secure agent configuration example
+# This file demonstrates security best practices
+
+name: "secure_assistant"
+description: "A secure assistant implementation"
+
+system_prompt: |
+  You are a helpful assistant with access to specific tools.
+  Follow security guidelines at all times.
+  # User input is passed separately, not in system prompt
+
+api_key: ${OPENAI_API_KEY}
+# ✅ API key from environment variable
+
+tools:
+  file_manager:
+    enabled: true
+    allowed_directories:
+      - "/tmp/agent_files"
+      - "/home/user/documents"
+    # ✅ Restricted to specific directories
+    
+  data_exporter:
+    enabled: false
+    # ✅ Disabled external data export
+    
+  file_reader:
+    path_validation: true
+    allowed_extensions:
+      - ".txt"
+      - ".md"
+    # ✅ Path validation enabled
+    
+settings:
+  debug_mode: false
+  log_level: "info"
+  max_execution_time: 30
+  # ✅ Production settings

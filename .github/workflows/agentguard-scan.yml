@@ -1,0 +1,58 @@
+name: AgentGuard Security Scan
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        
+    - name: Install AgentGuard
+      run: |
+        pip install -e .
+        
+    - name: Run AgentGuard scan
+      continue-on-error: true
+      run: |
+        mkdir -p reports
+        agentguard scan . --format json --output reports/agentguard-results.json
+        
+    - name: Upload scan results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: agentguard-results
+        path: reports/
+        if-no-files-found: warn
+        
+    - name: Display summary
+      if: always()
+      run: |
+        echo "## AgentGuard Scan Results" >> $GITHUB_STEP_SUMMARY
+        if [ -f reports/agentguard-results.json ]; then
+          echo "Scan completed. Results uploaded as artifact." >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          head -50 reports/agentguard-results.json >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        else
+          echo "No results generated" >> $GITHUB_STEP_SUMMARY
+        fi

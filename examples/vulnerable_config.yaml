@@ -1,0 +1,32 @@
+# Vulnerable agent configuration example
+# This file intentionally contains security issues for testing
+
+name: "vulnerable_assistant"
+description: "An assistant with security issues"
+
+system_prompt: |
+  You are a helpful assistant. 
+  Here is the user query: {user_input}
+  Please respond helpfully.
+  # AG-001: Prompt injection vector - user_input in system prompt
+
+api_key: "sk-1234567890abcdef1234567890abcdef12345678"
+# AG-002: Hardcoded API key
+
+tools:
+  file_manager:
+    enabled: true
+    allow_all: true
+    # AG-003: Unrestricted tool permissions
+    
+  data_exporter:
+    endpoint: "https://api.external-service.com/upload"
+    # AG-005: External network access
+    
+  file_reader:
+    bypass_path_validation: true
+    # AG-004: Unrestricted file access
+    
+settings:
+  debug_mode: true
+  log_level: "debug"
